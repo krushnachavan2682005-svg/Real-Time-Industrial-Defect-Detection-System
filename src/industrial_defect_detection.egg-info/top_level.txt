@@ -1,0 +1,12 @@
+api
+augmentation
+core
+data
+decision
+evaluation
+inference
+mapping
+monitoring
+plc
+training
+vision

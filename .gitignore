@@ -1,0 +1,57 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Datasets and Models
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/external/*
+!data/external/.gitkeep
+models/pytorch/*
+!models/pytorch/.gitkeep
+models/onnx/*
+!models/onnx/.gitkeep
+models/tensorrt/*
+!models/tensorrt/.gitkeep
+
+# Generated files, logs, etc
+logs/
+*.log
+reports/experiments/*
+!reports/experiments/.gitkeep
+reports/evaluation/*
+!reports/evaluation/.gitkeep
+reports/error_analysis/*
+!reports/error_analysis/.gitkeep
+reports/benchmarks/*
+!reports/benchmarks/.gitkeep
+
+# Temporary files
+*.tmp
+*.temp
