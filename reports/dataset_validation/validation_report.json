@@ -1,0 +1,24 @@
+{
+    "dataset_directory": "data\\raw",
+    "summary": {
+        "total_images": 1800,
+        "valid_images": 1800,
+        "invalid_images": 0,
+        "total_classes": 6
+    },
+    "class_distribution": {
+        "scratches": 300,
+        "inclusion": 300,
+        "patches": 300,
+        "crazing": 300,
+        "rolled-in_scale": 300,
+        "pitted_surface": 300
+    },
+    "formats_distribution": {
+        ".jpg": 1800
+    },
+    "dimensions_distribution": {
+        "200x200x3": 1800
+    },
+    "invalid_files": []
+}

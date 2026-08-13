@@ -1,0 +1,37 @@
+{
+    "dataset_path": "data\\raw",
+    "total_images": 1800,
+    "valid_images": 1800,
+    "classes": {
+        "inclusion": 300,
+        "pitted_surface": 300,
+        "rolled-in_scale": 300,
+        "patches": 300,
+        "crazing": 300,
+        "scratches": 300
+    },
+    "formats": {
+        ".jpg": 1800
+    },
+    "dimensions": {
+        "width": {
+            "min": 200,
+            "max": 200,
+            "avg": 200
+        },
+        "height": {
+            "min": 200,
+            "max": 200,
+            "avg": 200
+        },
+        "channels": [
+            3
+        ]
+    },
+    "file_size": {
+        "total_mb": 25.55,
+        "min_kb": 5.57,
+        "max_kb": 23.58,
+        "avg_kb": 14.54
+    }
+}
