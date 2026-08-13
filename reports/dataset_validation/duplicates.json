@@ -1,0 +1,14 @@
+{
+    "dataset_directory": "data\\raw",
+    "summary": {
+        "total_images_scanned": 1800,
+        "duplicate_groups_found": 1,
+        "total_redundant_files": 1
+    },
+    "duplicate_groups": [
+        [
+            "data\\raw\\neu_dataset\\NEU-DET\\train\\images\\patches\\patches_101.jpg",
+            "data\\raw\\neu_dataset\\NEU-DET\\train\\images\\patches\\patches_105.jpg"
+        ]
+    ]
+}
