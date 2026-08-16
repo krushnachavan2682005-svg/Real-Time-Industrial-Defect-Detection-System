@@ -1,0 +1,19 @@
+# Ultralytics YOLO dataset configuration
+
+# Using absolute paths would make it machine-dependent. 
+# Using relative paths. YOLO normally resolves relative to where it is run or using dataset root.
+# We specify path relative to project root or use an absolute path when running.
+# The safest for now is relative path from project root assuming we run training from project root.
+
+path: ./data/processed/yolo  # dataset root dir
+train: images/train          # train images (relative to 'path')
+val: images/validation       # val images (relative to 'path')
+
+# Classes
+names:
+  0: crazing
+  1: inclusion
+  2: patches
+  3: pitted_surface
+  4: rolled_in_scale
+  5: scratches

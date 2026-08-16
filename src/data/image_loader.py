@@ -1,7 +1,8 @@
-import cv2
-import numpy as np
 from pathlib import Path
 from typing import Union
+
+import cv2
+import numpy as np
 
 from src.core.exceptions import DataError
 from src.core.logging import configure_logging

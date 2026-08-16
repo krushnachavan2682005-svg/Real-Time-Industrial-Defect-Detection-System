@@ -1,0 +1,18 @@
+{
+    "total_annotation_files": 1800,
+    "successfully_parsed": 1800,
+    "failed_to_parse": 0,
+    "total_objects": 4189,
+    "valid_objects": 4189,
+    "invalid_objects": 0,
+    "conversion_failures": 0,
+    "class_distribution": {
+        "crazing": 689,
+        "inclusion": 1011,
+        "patches": 881,
+        "pitted_surface": 432,
+        "rolled_in_scale": 628,
+        "scratches": 548
+    },
+    "images_without_annotations": 0
+}
