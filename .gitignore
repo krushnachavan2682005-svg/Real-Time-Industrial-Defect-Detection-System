@@ -55,3 +55,7 @@ reports/benchmarks/*
 # Temporary files
 *.tmp
 *.temp
+
+# Dataset validation generated files
+reports/dataset_validation/samples/
+reports/dataset_validation/annotations/
