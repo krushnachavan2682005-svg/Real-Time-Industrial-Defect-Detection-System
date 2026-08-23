@@ -1,0 +1,39 @@
+# Augmentation configuration for Training
+# These parameters use albumentations internally.
+
+seed: 42
+
+# Ensure YOLO format for bounding boxes
+bbox_format: "yolo"
+min_visibility: 0.3
+
+# Flips (geometric)
+horizontal_flip:
+  enabled: true
+  p: 0.5
+
+vertical_flip:
+  enabled: true
+  p: 0.5
+
+# Slight shifts, scales and rotations
+shift_scale_rotate:
+  enabled: true
+  shift_limit: 0.0625
+  scale_limit: 0.1
+  rotate_limit: 15
+  p: 0.5
+
+# Brightness & Contrast (photometric)
+random_brightness_contrast:
+  enabled: true
+  brightness_limit: 0.2
+  contrast_limit: 0.2
+  p: 0.2
+
+# Noise / Blur
+# Often not needed heavily for metallic defects unless camera noise is an issue
+gauss_noise:
+  enabled: false
+  var_limit: [10.0, 50.0]
+  p: 0.1
