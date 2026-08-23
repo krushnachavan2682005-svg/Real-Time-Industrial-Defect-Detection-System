@@ -1,0 +1,43 @@
+{
+    "total_images": 1799,
+    "seed": 42,
+    "leakage_check": {
+        "passed": true
+    },
+    "train": {
+        "count": 1259,
+        "percentage": 69.98,
+        "class_distribution": {
+            "crazing": 209,
+            "rolled-in_scale": 210,
+            "patches": 210,
+            "inclusion": 210,
+            "scratches": 210,
+            "pitted_surface": 210
+        }
+    },
+    "val": {
+        "count": 270,
+        "percentage": 15.01,
+        "class_distribution": {
+            "scratches": 45,
+            "rolled-in_scale": 45,
+            "patches": 45,
+            "inclusion": 45,
+            "pitted_surface": 45,
+            "crazing": 45
+        }
+    },
+    "test": {
+        "count": 270,
+        "percentage": 15.01,
+        "class_distribution": {
+            "patches": 45,
+            "inclusion": 45,
+            "pitted_surface": 45,
+            "scratches": 45,
+            "rolled-in_scale": 45,
+            "crazing": 45
+        }
+    }
+}
