@@ -1,4 +1,10 @@
-# Environments
+# =========================================================================
+# PRODUCTION ML / YOLO PROJECT .GITIGNORE
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# Python Environments & Caches
+# -------------------------------------------------------------------------
 .env
 .venv
 env/
@@ -6,14 +12,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
-# IDEs
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -23,8 +21,29 @@ __pycache__/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+.tox/
 
-# Datasets and Models
+# -------------------------------------------------------------------------
+# IDEs & OS Files
+# -------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.gemini/
+
+# -------------------------------------------------------------------------
+# Jupyter Notebooks
+# -------------------------------------------------------------------------
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# -------------------------------------------------------------------------
+# Data (Raw, Interim, Processed, External)
+# -------------------------------------------------------------------------
+# Ignore all data but keep the directory structures using .gitkeep
 data/raw/*
 !data/raw/.gitkeep
 data/interim/*
@@ -33,6 +52,20 @@ data/processed/*
 !data/processed/.gitkeep
 data/external/*
 !data/external/.gitkeep
+
+# -------------------------------------------------------------------------
+# Model Weights (PyTorch, ONNX, TensorRT)
+# -------------------------------------------------------------------------
+# Prevent committing large weight files anywhere in the project
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.pb
+*.h5
+
+# Specific Model Directories
 models/pytorch/*
 !models/pytorch/.gitkeep
 models/onnx/*
@@ -40,9 +73,28 @@ models/onnx/*
 models/tensorrt/*
 !models/tensorrt/.gitkeep
 
-# Generated files, logs, etc
+# -------------------------------------------------------------------------
+# YOLO & Ultralytics Specific
+# -------------------------------------------------------------------------
+# Ultralytics saves predictions and training logs in runs/ by default
+runs/
+yolov8n.pt
+
+# -------------------------------------------------------------------------
+# Experiment Tracking (WandB, MLFlow, Tensorboard)
+# -------------------------------------------------------------------------
+wandb/
+mlruns/
+tb_logs/
+
+# -------------------------------------------------------------------------
+# Generated files, Logs, Reports
+# -------------------------------------------------------------------------
 logs/
 *.log
+*.tmp
+*.temp
+
 reports/experiments/*
 !reports/experiments/.gitkeep
 reports/evaluation/*
@@ -51,10 +103,6 @@ reports/error_analysis/*
 !reports/error_analysis/.gitkeep
 reports/benchmarks/*
 !reports/benchmarks/.gitkeep
-
-# Temporary files
-*.tmp
-*.temp
 
 # Dataset validation generated files
 reports/dataset_validation/samples/
