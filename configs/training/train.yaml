@@ -1,0 +1,21 @@
+# Baseline YOLOv8 training configuration
+
+model: "yolov8n.pt"           # Starting weights
+dataset_config: "configs/data/dataset.yaml"
+experiment_name: "baseline_yolov8n"
+epochs: 50
+batch_size: 16                # Will be overridden by hardware auto-detection if needed, but 16 is a safe start
+image_size: 200               # Original images are 200x200
+patience: 10
+workers: 4
+seed: 42
+save_period: 10
+device: ""                    # Leave empty for auto-detect (CPU/GPU)
+
+# Optimization parameters (YOLOv8 defaults are fine for baseline, but we log them)
+optimizer: "auto"
+lr0: 0.01
+
+# Paths for saving artifacts
+project_dir: "reports/experiments"
+model_dir: "models/pytorch"

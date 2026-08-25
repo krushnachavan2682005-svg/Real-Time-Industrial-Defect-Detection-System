@@ -1,0 +1,28 @@
+# YOLOv8 hyperparameters mimicking Module 5 augmentation intent
+# This file is used in model.train(cfg=...)
+
+# 1. Disable YOLO-specific complex augmentations to match Module 5 exactly
+mosaic: 0.0
+mixup: 0.0
+copy_paste: 0.0
+
+# 2. Geometric (Flips)
+fliplr: 0.5  # Horizontal flip probability (matches Module 5 horizontal_flip)
+flipud: 0.5  # Vertical flip probability (matches Module 5 vertical_flip)
+
+# 3. Geometric (Shift, Scale, Rotate)
+degrees: 15.0  # Rotate limit
+translate: 0.0625  # Shift limit
+scale: 0.1  # Scale limit
+shear: 0.0
+perspective: 0.0
+
+# 4. Photometric (Brightness/Contrast)
+# YOLO maps this via HSV space rather than direct Brightness/Contrast limits.
+hsv_h: 0.015
+hsv_s: 0.2
+hsv_v: 0.2  # Value ~= brightness
+
+# Seed
+deterministic: True
+seed: 42
