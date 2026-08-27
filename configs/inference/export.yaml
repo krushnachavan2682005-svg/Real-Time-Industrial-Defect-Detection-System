@@ -1,0 +1,18 @@
+# Module 9 Export Configuration
+
+# Model paths
+model_path: "models/pytorch/baseline_yolov8n/best.pt"
+onnx_output_dir: "models/onnx"
+tensorrt_output_dir: "models/tensorrt"
+
+# Export parameters
+image_size: [200, 200]  # Assuming from previous modules it was 200x200
+opset: 12  # Generally safe for YOLOv8 and onnxruntime
+dynamic: false
+simplify: true
+
+# Benchmark settings
+benchmark:
+  warmup_iterations: 20
+  iterations: 100
+  test_image: "data/processed/yolo/test/images/" # Will pick the first image found here
