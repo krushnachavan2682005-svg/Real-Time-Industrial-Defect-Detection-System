@@ -1,0 +1,15 @@
+# Module 8 Evaluation Configuration
+
+model_path: "models/pytorch/baseline_yolov8n/best.pt"
+dataset_yaml: "configs/data/dataset.yaml"
+
+# Evaluation thresholds
+confidence_threshold: 0.25  # Standard for evaluation (Ultralytics default is 0.001 for metrics, but we want realistic predictions)
+iou_threshold: 0.50
+
+# Output directories
+evaluation_dir: "reports/evaluation"
+error_analysis_dir: "reports/error_analysis"
+
+# Limits
+max_visual_samples_per_class: 10

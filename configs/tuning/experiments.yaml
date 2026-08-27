@@ -1,0 +1,30 @@
+# Tuning Experiments Configuration
+# Base configuration will be loaded from configs/training/train.yaml
+# Only the parameters specified here will override the baseline for each experiment.
+
+experiments:
+  - id: "exp_01_lr"
+    hypothesis: "A lower learning rate might lead to better convergence without overshooting."
+    epochs: 10
+    lr0: 0.001
+  
+  - id: "exp_02_optimizer"
+    hypothesis: "AdamW might provide better regularization and convergence than the default optimizer."
+    epochs: 10
+    optimizer: "AdamW"
+  
+  - id: "exp_03_weight_decay"
+    hypothesis: "Higher weight decay might reduce overfitting on our small dataset."
+    epochs: 10
+    weight_decay: 0.01
+
+  - id: "exp_04_aug_strength"
+    hypothesis: "Reducing mosaic augmentation might help the model learn raw defect features better on small objects."
+    epochs: 10
+    mosaic: 0.5
+    mixup: 0.0
+
+  - id: "exp_05_imgsz"
+    hypothesis: "A larger image size (320 vs 200) might preserve finer defect details."
+    epochs: 10
+    image_size: 320
