@@ -69,4 +69,28 @@ Decision Engine
 ```
 
 The **Decision Engine** is deterministic and strictly separated from model inference.
-It processes standard `Detection` objects, applies configurable rules (confidence thresholds, class-specific policies, severity escalations) from `configs/decision/decision_rules.yaml`, and outputs a strongly-typed `DecisionResult` mapping defects to an industrial outcome (PASS / REVIEW / REJECT) with a human-readable reason.
+with a human-readable reason.
+
+## Defect Mapping and Visualization (Module 12 Update)
+
+```text
+ONNX Detection Output
+        ↓
+Coordinate Transformation
+        ↓
+Decision Engine
+        ↓
+Defect Mapper
+        ├── Spatial Position
+        ├── Region
+        ├── Area
+        └── Frame Coverage
+        ↓
+Inspection Result
+        ├── Structured Data
+        └── Visualization
+        ↓
+Annotated Inspection Frame
+```
+
+The **Defect Mapping** module is responsible for providing spatial context to raw bounding boxes and rendering the results into a human-readable form. It transforms standard detections into `MappedDefect` objects (containing region, area, area ratio, and normalized coordinates). An overarching `ResultBuilder` combines this mapped data with the `DecisionResult` and frame metadata into a single `InspectionResult`. Finally, the `DefectVisualizer` generates an annotated inspection frame based on a standardized color policy, completely independent from core mapping logic.
