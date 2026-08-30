@@ -1,46 +1,44 @@
 from datetime import datetime
 from typing import List
 
+import numpy as np
+
+from src.core.exceptions import MappingError
 from src.decision.models import DecisionResult
-from src.mapping.defect_mapper import DefectMapper
-from src.mapping.models import (
-    FrameMetadata,
-    InspectionResult,
-    InspectionSummary,
-)
+from src.mapping.defect_mapper import map_detections
+from src.mapping.models import FrameMetadata, InspectionResult
 from src.vision.detection import Detection
 
 
 class ResultBuilder:
-    """Orchestrates building the InspectionResult."""
+    def __init__(self):
+        pass
 
     def build(
         self,
-        frame_width: int,
-        frame_height: int,
-        source_id: str,
+        frame: np.ndarray,
         detections: List[Detection],
         decision_result: DecisionResult,
+        source_id: str = "camera_01",
     ) -> InspectionResult:
-        mapper = DefectMapper(frame_width, frame_height)
-        mapped_defects = mapper.map_detections(detections)
+        """
+        Builds a structured InspectionResult from frame, detections, and decisions.
+        """
+        if not isinstance(frame, np.ndarray) or frame.size == 0:
+            raise MappingError("Invalid frame provided.")
 
-        frame_meta = FrameMetadata(
-            width=frame_width,
-            height=frame_height,
-            source_id=source_id,
-            timestamp=datetime.utcnow(),
+        height, width = frame.shape[:2]
+
+        frame_metadata = FrameMetadata(
+            width=width, height=height, source_id=source_id, timestamp=datetime.utcnow()
         )
 
-        regions = list(set([d.spatial_region.value for d in mapped_defects]))
-
-        summary = InspectionSummary(
-            total_defects=len(mapped_defects), affected_regions=regions
-        )
+        mapped_defects = map_detections(detections, width, height)
 
         return InspectionResult(
-            frame=frame_meta,
+            frame=frame_metadata,
             defects=mapped_defects,
             decision=decision_result,
-            summary=summary,
+            defect_count=len(mapped_defects),
+            timestamp=datetime.utcnow(),
         )

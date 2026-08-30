@@ -1,51 +1,56 @@
 import pytest
 
-from src.mapping.models import SpatialRegion
-from src.mapping.spatial_mapper import SpatialMapper
+from src.core.exceptions import MappingError
+from src.mapping.spatial_mapper import (
+    calculate_area,
+    calculate_area_ratio,
+    calculate_center,
+    calculate_dimensions,
+    get_spatial_region,
+    normalize_coordinates,
+)
 
 
-@pytest.fixture
-def mapper():
-    return SpatialMapper(1920, 1080)
+def test_calculate_center():
+    assert calculate_center(0, 0, 100, 100) == (50, 50)
+    assert calculate_center(10, 20, 30, 40) == (20, 30)
 
 
-def test_calculate_center(mapper):
-    cx, cy = mapper.calculate_center(100, 100, 300, 300)
-    assert cx == 200.0
-    assert cy == 200.0
+def test_calculate_dimensions():
+    assert calculate_dimensions(10, 20, 110, 120) == (100, 100)
+    with pytest.raises(MappingError):
+        calculate_dimensions(110, 120, 10, 20)  # Inverted coords
 
 
-def test_calculate_area(mapper):
-    area = mapper.calculate_area(200, 200)
-    assert area == 40000.0
+def test_calculate_area():
+    assert calculate_area(10, 20) == 200
+    assert calculate_area(0, 5) == 0
 
 
-def test_calculate_area_ratio(mapper):
-    ratio = mapper.calculate_area_ratio(207360)
-    assert ratio == 0.1  # 207360 / (1920 * 1080)
+def test_calculate_area_ratio():
+    assert calculate_area_ratio(100, 1000, 1000) == 0.0001
+    with pytest.raises(MappingError):
+        calculate_area_ratio(100, 0, 100)
 
 
-def test_validate_bbox(mapper):
-    assert mapper.validate_bbox(10, 10, 100, 100) is True
-    assert mapper.validate_bbox(100, 100, 10, 10) is False  # inverted
-
-    bad_mapper = SpatialMapper(0, 0)
-    assert bad_mapper.validate_bbox(10, 10, 100, 100) is False
+def test_normalize_coordinates():
+    assert normalize_coordinates(500, 500, 1000, 1000) == (0.5, 0.5)
+    # Outside bounds should be clamped
+    assert normalize_coordinates(1500, -100, 1000, 1000) == (1.0, 0.0)
 
 
-def test_normalized_center(mapper):
-    nx, ny = mapper.calculate_normalized_center(1920, 1080)
-    assert nx == 1.0
-    assert ny == 1.0
+def test_get_spatial_region():
+    assert get_spatial_region(0.1, 0.1) == "TOP_LEFT"
+    assert get_spatial_region(0.5, 0.1) == "TOP_CENTER"
+    assert get_spatial_region(0.9, 0.1) == "TOP_RIGHT"
+    
+    assert get_spatial_region(0.1, 0.5) == "CENTER_LEFT"
+    assert get_spatial_region(0.5, 0.5) == "CENTER"
+    assert get_spatial_region(0.9, 0.5) == "CENTER_RIGHT"
+    
+    assert get_spatial_region(0.1, 0.9) == "BOTTOM_LEFT"
+    assert get_spatial_region(0.5, 0.9) == "BOTTOM_CENTER"
+    assert get_spatial_region(0.9, 0.9) == "BOTTOM_RIGHT"
 
-    nx, ny = mapper.calculate_normalized_center(-10, -10)
-    assert nx == 0.0
-    assert ny == 0.0
-
-
-def test_regions(mapper):
-    assert mapper.get_region(0.1, 0.1) == SpatialRegion.TOP_LEFT
-    assert mapper.get_region(0.5, 0.5) == SpatialRegion.CENTER
-    assert mapper.get_region(0.9, 0.9) == SpatialRegion.BOTTOM_RIGHT
-    assert mapper.get_region(0.1, 0.9) == SpatialRegion.BOTTOM_LEFT
-    assert mapper.get_region(0.9, 0.1) == SpatialRegion.TOP_RIGHT
+    with pytest.raises(MappingError):
+        get_spatial_region(1.5, 0.5)

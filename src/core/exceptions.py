@@ -45,3 +45,9 @@ class DecisionConfigurationError(ConfigurationError):
     """Raised when there is an error in the decision rules configuration."""
 
     pass
+
+
+class MappingError(ApplicationError):
+    """Raised when an error occurs during defect mapping or spatial geometry calculations."""
+
+    pass

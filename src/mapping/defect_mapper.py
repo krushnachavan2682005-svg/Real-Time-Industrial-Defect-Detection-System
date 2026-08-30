@@ -1,47 +1,49 @@
 from typing import List
 
 from src.mapping.models import MappedDefect
-from src.mapping.spatial_mapper import SpatialMapper
+from src.mapping.spatial_mapper import (
+    calculate_area,
+    calculate_area_ratio,
+    calculate_center,
+    calculate_dimensions,
+    get_spatial_region,
+    normalize_coordinates,
+)
 from src.vision.detection import Detection
 
 
-class DefectMapper:
-    """Maps bounding box detections to spatial objects."""
+def map_detections(
+    detections: List[Detection], frame_width: int, frame_height: int
+) -> List[MappedDefect]:
+    """
+    Converts a list of raw Detections into MappedDefects with spatial context.
+    """
+    mapped_defects = []
 
-    def __init__(self, frame_width: int, frame_height: int):
-        self.spatial_mapper = SpatialMapper(frame_width, frame_height)
+    for det in detections:
+        # Calculate spatial properties
+        center_x, center_y = calculate_center(det.x1, det.y1, det.x2, det.y2)
+        width, height = calculate_dimensions(det.x1, det.y1, det.x2, det.y2)
+        area = calculate_area(width, height)
+        area_ratio = calculate_area_ratio(area, frame_width, frame_height)
 
-    def map_detections(self, detections: List[Detection]) -> List[MappedDefect]:
-        mapped_defects = []
-        for det in detections:
-            valid = self.spatial_mapper.validate_bbox(det.x1, det.y1, det.x2, det.y2)
-            if not valid:
-                continue
+        norm_x, norm_y = normalize_coordinates(
+            center_x, center_y, frame_width, frame_height
+        )
+        region = get_spatial_region(norm_x, norm_y)
 
-            width = det.width
-            height = det.height
-            center_x, center_y = self.spatial_mapper.calculate_center(
-                det.x1, det.y1, det.x2, det.y2
-            )
-            norm_x, norm_y = self.spatial_mapper.calculate_normalized_center(
-                center_x, center_y
-            )
-            area = self.spatial_mapper.calculate_area(width, height)
-            area_ratio = self.spatial_mapper.calculate_area_ratio(area)
-            region = self.spatial_mapper.get_region(norm_x, norm_y)
+        mapped = MappedDefect(
+            original_detection=det.to_dict(),
+            center_x=center_x,
+            center_y=center_y,
+            normalized_center_x=norm_x,
+            normalized_center_y=norm_y,
+            width=width,
+            height=height,
+            area=area,
+            area_ratio=area_ratio,
+            spatial_region=region,
+        )
+        mapped_defects.append(mapped)
 
-            mapped = MappedDefect(
-                detection=det.to_dict(),
-                center_x=center_x,
-                center_y=center_y,
-                normalized_center_x=norm_x,
-                normalized_center_y=norm_y,
-                width=float(width),
-                height=float(height),
-                area=area,
-                area_ratio=area_ratio,
-                spatial_region=region,
-            )
-            mapped_defects.append(mapped)
-
-        return mapped_defects
+    return mapped_defects

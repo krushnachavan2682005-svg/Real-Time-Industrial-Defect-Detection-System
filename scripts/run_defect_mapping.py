@@ -1,94 +1,94 @@
+import argparse
 import json
 import os
 from datetime import datetime
+from pathlib import Path
 
 import cv2
 import numpy as np
 
 from src.decision.models import Decision, DecisionResult, Severity
 from src.mapping.result_builder import ResultBuilder
-from src.mapping.visualizer import DefectVisualizer
+from src.mapping.visualizer import Visualizer
 from src.vision.detection import Detection
 
 
-def main():
-    print("Running Defect Mapping Module...")
+def run_demo():
+    # 1. Create a dummy image or load one if available
+    # For demo purposes, create a dummy image (e.g., synthetic metal surface)
+    frame = np.ones((1080, 1920, 3), dtype=np.uint8) * 200
+    cv2.putText(
+        frame,
+        "Synthetic Metal Surface",
+        (800, 500),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (100, 100, 100),
+        2,
+    )
 
-    os.makedirs("reports/mapping", exist_ok=True)
-
-    # 1. Create a dummy frame
-    frame = np.zeros((1080, 1920, 3), dtype=np.uint8)
-
-    # 2. Mock Detections
+    # 2. Mock detections
     detections = [
         Detection(
-            class_id=0,
+            class_id=1,
             class_name="scratches",
-            confidence=0.91,
-            x1=1500,
-            y1=100,
-            x2=1700,
-            y2=300,
+            confidence=0.92,
+            x1=200,
+            y1=150,
+            x2=450,
+            y2=180,
         ),
         Detection(
             class_id=2,
             class_name="patches",
             confidence=0.85,
-            x1=800,
-            y1=400,
-            x2=1100,
-            y2=700,
-        ),
-        Detection(
-            class_id=1,
-            class_name="crazing",
-            confidence=0.72,
-            x1=100,
-            y1=800,
-            x2=300,
-            y2=1000,
+            x1=1400,
+            y1=600,
+            x2=1600,
+            y2=800,
         ),
     ]
 
-    # 3. Mock DecisionResult
+    # 3. Mock decision engine result
     decision_result = DecisionResult(
         decision=Decision.REJECT,
         severity=Severity.HIGH,
-        reason="Multiple defects found",
-        total_defects=3,
-        affected_classes=["scratches", "patches", "crazing"],
-        highest_confidence=0.91,
+        reason="Critical defects detected",
+        total_defects=2,
+        affected_classes=["scratches", "patches"],
+        highest_confidence=0.92,
         timestamp=datetime.utcnow(),
     )
 
-    # 4. Build Result
+    # 4. Map defects and build result
+    print("Building inspection result...")
     builder = ResultBuilder()
     inspection_result = builder.build(
-        frame_width=frame.shape[1],
-        frame_height=frame.shape[0],
-        source_id="cam_01",
-        detections=detections,
-        decision_result=decision_result,
+        frame, detections, decision_result, source_id="camera_mock"
     )
 
     # 5. Visualize
-    visualizer = DefectVisualizer()
+    print("Visualizing results...")
+    visualizer = Visualizer()
     annotated_frame = visualizer.render(frame, inspection_result)
 
-    # 6. Save Artifacts
-    json_path = "reports/mapping/inspection_result.json"
-    img_path = "reports/mapping/annotated_frame.jpg"
+    # 6. Save output
+    output_dir = Path("reports/mapping")
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    json_path = output_dir / "inspection_result.json"
+    img_path = output_dir / "annotated_frame.jpg"
 
     with open(json_path, "w") as f:
-        # Pydantic v2 dump
-        if hasattr(inspection_result, "model_dump_json"):
-            f.write(inspection_result.model_dump_json(indent=2))
-        else:
-            f.write(inspection_result.json(indent=2))
+        # Pydantic model serialization
+        f.write(inspection_result.model_dump_json(indent=4))
 
-    cv2.imwrite(img_path, annotated_frame)
-    print(f"Artifacts saved to {json_path} and {img_path}")
+    cv2.imwrite(str(img_path), annotated_frame)
+
+    print(f"Results saved to {output_dir}:")
+    print(f" - {json_path}")
+    print(f" - {img_path}")
 
 
 if __name__ == "__main__":
-    main()
+    run_demo()
