@@ -17,3 +17,6 @@ htmlcov
 *.log
 *.tmp
 *.temp
+
+# Allow the specific optimized model for production image builds
+!models/onnx/best.onnx
