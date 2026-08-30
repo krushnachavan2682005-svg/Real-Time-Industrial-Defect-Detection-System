@@ -51,3 +51,27 @@ class MappingError(ApplicationError):
     """Raised when an error occurs during defect mapping or spatial geometry calculations."""
 
     pass
+
+
+class PLCConnectionError(IntegrationError):
+    """Raised when the PLC client fails to connect or loses connection."""
+
+    pass
+
+
+class PLCCommandError(IntegrationError):
+    """Raised when a command fails to execute on the PLC."""
+
+    pass
+
+
+class PLCConfigurationError(ConfigurationError):
+    """Raised when PLC configuration is invalid."""
+
+    pass
+
+
+class UnsupportedPLCModeError(ConfigurationError):
+    """Raised when an unsupported PLC mode is specified in configuration."""
+
+    pass
