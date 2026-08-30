@@ -1,0 +1,18 @@
+service:
+  name: industrial-defect-detection-api
+  version: "1.0.0"
+
+server:
+  host: 0.0.0.0
+  port: 8000
+
+inspection:
+  enable_plc_dispatch: false
+  return_visualization: false
+
+limits:
+  max_upload_size_mb: 10
+  allowed_extensions:
+    - .jpg
+    - .jpeg
+    - .png
