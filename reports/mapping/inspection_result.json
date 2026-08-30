@@ -1,97 +1,68 @@
 {
-  "frame": {
-    "width": 1920,
-    "height": 1080,
-    "source_id": "cam_01",
-    "timestamp": "2026-08-30T08:13:25.939153"
-  },
-  "defects": [
-    {
-      "detection": {
-        "class_id": 0,
-        "class_name": "scratches",
-        "confidence": 0.91,
-        "bbox": [
-          1500,
-          100,
-          1700,
-          300
-        ]
-      },
-      "center_x": 1600.0,
-      "center_y": 200.0,
-      "normalized_center_x": 0.8333333333333334,
-      "normalized_center_y": 0.18518518518518517,
-      "width": 200.0,
-      "height": 200.0,
-      "area": 40000.0,
-      "area_ratio": 0.019290123456790122,
-      "spatial_region": "TOP_RIGHT"
+    "frame": {
+        "width": 1920,
+        "height": 1080,
+        "source_id": "camera_mock",
+        "timestamp": "2026-08-30T10:36:24.683148"
     },
-    {
-      "detection": {
-        "class_id": 2,
-        "class_name": "patches",
-        "confidence": 0.85,
-        "bbox": [
-          800,
-          400,
-          1100,
-          700
-        ]
-      },
-      "center_x": 950.0,
-      "center_y": 550.0,
-      "normalized_center_x": 0.4947916666666667,
-      "normalized_center_y": 0.5092592592592593,
-      "width": 300.0,
-      "height": 300.0,
-      "area": 90000.0,
-      "area_ratio": 0.043402777777777776,
-      "spatial_region": "CENTER"
-    },
-    {
-      "detection": {
-        "class_id": 1,
-        "class_name": "crazing",
-        "confidence": 0.72,
-        "bbox": [
-          100,
-          800,
-          300,
-          1000
-        ]
-      },
-      "center_x": 200.0,
-      "center_y": 900.0,
-      "normalized_center_x": 0.10416666666666667,
-      "normalized_center_y": 0.8333333333333334,
-      "width": 200.0,
-      "height": 200.0,
-      "area": 40000.0,
-      "area_ratio": 0.019290123456790122,
-      "spatial_region": "BOTTOM_LEFT"
-    }
-  ],
-  "decision": {
-    "decision": "REJECT",
-    "severity": "HIGH",
-    "reason": "Multiple defects found",
-    "total_defects": 3,
-    "affected_classes": [
-      "scratches",
-      "patches",
-      "crazing"
+    "defects": [
+        {
+            "original_detection": {
+                "class_id": 1,
+                "class_name": "scratches",
+                "confidence": 0.92,
+                "bbox": [
+                    200,
+                    150,
+                    450,
+                    180
+                ]
+            },
+            "center_x": 325,
+            "center_y": 165,
+            "normalized_center_x": 0.16927083333333334,
+            "normalized_center_y": 0.1527777777777778,
+            "width": 250,
+            "height": 30,
+            "area": 7500,
+            "area_ratio": 0.003616898148148148,
+            "spatial_region": "TOP_LEFT"
+        },
+        {
+            "original_detection": {
+                "class_id": 2,
+                "class_name": "patches",
+                "confidence": 0.85,
+                "bbox": [
+                    1400,
+                    600,
+                    1600,
+                    800
+                ]
+            },
+            "center_x": 1500,
+            "center_y": 700,
+            "normalized_center_x": 0.78125,
+            "normalized_center_y": 0.6481481481481481,
+            "width": 200,
+            "height": 200,
+            "area": 40000,
+            "area_ratio": 0.019290123456790122,
+            "spatial_region": "CENTER_RIGHT"
+        }
     ],
-    "highest_confidence": 0.91,
-    "timestamp": "2026-08-30T08:13:25.936632"
-  },
-  "summary": {
-    "total_defects": 3,
-    "affected_regions": [
-      "TOP_RIGHT",
-      "BOTTOM_LEFT",
-      "CENTER"
-    ]
-  }
+    "decision": {
+        "decision": "REJECT",
+        "severity": "HIGH",
+        "reason": "Critical defects detected",
+        "total_defects": 2,
+        "affected_classes": [
+            "scratches",
+            "patches"
+        ],
+        "highest_confidence": 0.92,
+        "timestamp": "2026-08-30T10:36:24.683148"
+    },
+    "defect_count": 2,
+    "timestamp": "2026-08-30T10:36:24.683148"
 }

@@ -1,120 +1,114 @@
-import os
-from typing import Tuple
-
 import cv2
 import numpy as np
 import yaml
 
-from src.decision.models import Decision
+from src.core.exceptions import MappingError
 from src.mapping.models import InspectionResult
 
 
-class DefectVisualizer:
-    """Visualizes InspectionResult onto a frame."""
-
+class Visualizer:
     def __init__(self, config_path: str = "configs/mapping/visualization.yaml"):
         self.config = self._load_config(config_path)
+        self.style = self.config.get("style", {})
+        self.colors = self.config.get("colors", {})
 
-    def _load_config(self, path: str) -> dict:
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                import typing
-                return typing.cast(dict, yaml.safe_load(f))
-        # Default fallback
-        return {
-            "colors": {
-                "pass": [0, 255, 0],
-                "review": [0, 255, 255],
-                "reject": [0, 0, 255],
-                "default_box": [255, 255, 255],
-                "text": [255, 255, 255],
-                "text_bg": [0, 0, 0],
-            },
-            "drawing": {
-                "box_thickness": 2,
-                "font_scale_label": 0.5,
-                "font_scale_main": 1.0,
-                "font_thickness": 2,
-            },
-        }
-
-    def _get_decision_color(self, decision: Decision) -> Tuple[int, int, int]:
-        colors = self.config.get("colors", {})
-        if decision == Decision.PASS:
-            c = colors.get("pass", [0, 255, 0])
-        elif decision == Decision.REVIEW:
-            c = colors.get("review", [0, 255, 255])
-        else:
-            c = colors.get("reject", [0, 0, 255])
-        return tuple(c)
+    def _load_config(self, config_path: str) -> dict:
+        try:
+            with open(config_path, "r") as f:
+                return yaml.safe_load(f)
+        except Exception:
+            # Fallback configuration
+            return {
+                "style": {
+                    "box_thickness": 2,
+                    "font_scale": 0.6,
+                    "font_thickness": 1,
+                    "text_padding": 5,
+                    "panel_alpha": 0.6,
+                },
+                "colors": {
+                    "PASS": [0, 255, 0],
+                    "REVIEW": [0, 255, 255],
+                    "REJECT": [0, 0, 255],
+                    "DEFAULT_BOX": [255, 255, 0],
+                    "TEXT": [255, 255, 255],
+                    "TEXT_BACKGROUND": [0, 0, 0],
+                },
+            }
 
     def render(self, frame: np.ndarray, result: InspectionResult) -> np.ndarray:
-        """Draws annotations without mutating original frame."""
-        annotated = frame.copy()
+        """
+        Renders the inspection result onto a copy of the frame.
+        """
+        if not isinstance(frame, np.ndarray) or frame.size == 0:
+            raise MappingError("Invalid frame provided for visualization.")
 
-        box_thickness = self.config["drawing"]["box_thickness"]
-        label_scale = self.config["drawing"]["font_scale_label"]
-        txt_color = tuple(self.config["colors"]["text"])
-        bg_color = tuple(self.config["colors"]["text_bg"])
+        annotated_frame = frame.copy()
 
-        decision_color = self._get_decision_color(result.decision.decision)
+        box_thickness = self.style.get("box_thickness", 2)
+        font_scale = self.style.get("font_scale", 0.6)
+        font_thickness = self.style.get("font_thickness", 1)
+
+        decision_val = result.decision.decision.value
+        main_color = self.colors.get(
+            decision_val, self.colors.get("DEFAULT_BOX", [255, 255, 0])
+        )
 
         # Draw defects
         for defect in result.defects:
-            bbox = defect.detection["bbox"]
-            x1, y1, x2, y2 = [int(v) for v in bbox]
-            cls_name = defect.detection["class_name"]
-            conf = defect.detection["confidence"]
-            region = defect.spatial_region.value
+            orig = defect.original_detection
+            bbox = orig.get("bbox", [0, 0, 0, 0])
+            x1, y1, x2, y2 = bbox
 
-            cv2.rectangle(annotated, (x1, y1), (x2, y2), decision_color, box_thickness)
-
-            label = f"{cls_name} {conf:.2f} ({region})"
-            (tw, th), baseline = cv2.getTextSize(
-                label, cv2.FONT_HERSHEY_SIMPLEX, label_scale, 1
-            )
+            # Draw bounding box
             cv2.rectangle(
-                annotated,
-                (x1, y1 - th - baseline),
-                (x1 + tw, y1),
-                bg_color,
-                cv2.FILLED,
+                annotated_frame, (x1, y1), (x2, y2), main_color, box_thickness
+            )
+
+            # Draw label
+            label = (
+                f"{orig.get('class_name', 'unknown')} {orig.get('confidence', 0.0):.2f}"
+            )
+            (text_w, text_h), _ = cv2.getTextSize(
+                label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness
+            )
+
+            # Draw text background
+            cv2.rectangle(
+                annotated_frame,
+                (x1, y1 - text_h - 10),
+                (x1 + text_w, y1),
+                self.colors.get("TEXT_BACKGROUND", [0, 0, 0]),
+                -1,
             )
             cv2.putText(
-                annotated,
+                annotated_frame,
                 label,
-                (x1, y1 - baseline),
+                (x1, y1 - 5),
                 cv2.FONT_HERSHEY_SIMPLEX,
-                label_scale,
-                txt_color,
-                1,
-                cv2.LINE_AA,
+                font_scale,
+                self.colors.get("TEXT", [255, 255, 255]),
+                font_thickness,
             )
 
-        # Draw overall decision
-        main_scale = self.config["drawing"]["font_scale_main"]
-        main_thick = self.config["drawing"]["font_thickness"]
+        # Draw summary panel
+        panel_text = [
+            f"DECISION: {decision_val}",
+            f"SEVERITY: {result.decision.severity.value}",
+            f"DEFECTS: {result.defect_count}",
+        ]
 
-        decision_txt = f"DECISION: {result.decision.decision.value}"
-        severity_txt = f"SEVERITY: {result.decision.severity.value}"
+        y_offset = 30
+        for text in panel_text:
+            cv2.putText(
+                annotated_frame,
+                text,
+                (20, y_offset),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.8,
+                main_color,
+                2,
+            )
+            y_offset += 30
 
-        cv2.putText(
-            annotated,
-            decision_txt,
-            (30, 50),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            main_scale,
-            decision_color,
-            main_thick,
-        )
-        cv2.putText(
-            annotated,
-            severity_txt,
-            (30, 90),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            main_scale,
-            decision_color,
-            main_thick,
-        )
-
-        return annotated
+        return annotated_frame

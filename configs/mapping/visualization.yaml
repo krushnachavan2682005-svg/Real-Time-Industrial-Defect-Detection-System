@@ -1,16 +1,25 @@
-# Configuration for Module 12 Visualization Component
+# Module 12 Visualization Configuration
+style:
+  box_thickness: 2
+  font_scale: 0.6
+  font_thickness: 1
+  text_padding: 5
+  panel_alpha: 0.6
 
 colors:
-  # Colors format: [B, G, R]
-  pass: [0, 255, 0]      # Green
-  review: [0, 255, 255]  # Yellow
-  reject: [0, 0, 255]    # Red
-  default_box: [255, 255, 255] # White
-  text: [255, 255, 255]        # White
-  text_bg: [0, 0, 0]           # Black
-
-drawing:
-  box_thickness: 2
-  font_scale_label: 0.5
-  font_scale_main: 1.0
-  font_thickness: 2
+  # BGR format
+  PASS: [0, 255, 0]      # Green
+  REVIEW: [0, 255, 255]  # Yellow
+  REJECT: [0, 0, 255]    # Red
+  
+  # Severity
+  NONE: [0, 255, 0]
+  LOW: [0, 200, 255]
+  MEDIUM: [0, 165, 255]
+  HIGH: [0, 100, 255]
+  CRITICAL: [0, 0, 255]
+  
+  # Default mapping colors
+  DEFAULT_BOX: [255, 255, 0]
+  TEXT: [255, 255, 255]
+  TEXT_BACKGROUND: [0, 0, 0]
