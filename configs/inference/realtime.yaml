@@ -1,0 +1,26 @@
+# Module 10 Real-Time Inference Configuration
+
+source:
+  type: video # "camera" or "video"
+  id: 0 # camera ID if type == camera
+  path: "data/processed/yolo/test/images/scratches_100.jpg" # dummy default
+
+inference:
+  model_path: "models/onnx/best.onnx"
+  image_size: [224, 224]  # The input size expected by the ONNX model (updated to 224 in previous module)
+  confidence_threshold: 0.25
+  iou_threshold: 0.50
+  
+display:
+  headless: false
+  warmup_frames: 20
+  target_fps: 30 # For video playback control
+
+classes:
+  # Using standard project mapping
+  0: "crazing"
+  1: "inclusion"
+  2: "patches"
+  3: "pitted_surface"
+  4: "rolled_in_scale"
+  5: "scratches"

@@ -67,13 +67,13 @@ class ONNXInferenceWrapper:
         
         return img
 
-    def predict(self, img_bgr: np.ndarray) -> np.ndarray:
+    def predict(self, img_bgr: np.ndarray) -> Any:
         """Runs inference and returns raw ONNX outputs."""
         input_tensor = self.preprocess(img_bgr)
         outputs = self.session.run([self.output_name], {self.input_name: input_tensor})
         return outputs[0]
         
-    def predict_tensor(self, input_tensor: np.ndarray) -> np.ndarray:
+    def predict_tensor(self, input_tensor: np.ndarray) -> Any:
         """Runs inference on an already preprocessed tensor."""
         outputs = self.session.run([self.output_name], {self.input_name: input_tensor})
         return outputs[0]

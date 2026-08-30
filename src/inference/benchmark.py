@@ -41,12 +41,12 @@ class BenchmarkRunner:
             end_time = time.perf_counter()
             latencies.append((end_time - start_time) * 1000.0) # convert to ms
             
-        latencies = np.array(latencies)
+        latencies_arr = np.array(latencies)
         
-        mean_latency = float(np.mean(latencies))
-        median_latency = float(np.median(latencies))
-        p95_latency = float(np.percentile(latencies, 95))
-        p99_latency = float(np.percentile(latencies, 99))
+        mean_latency = float(np.mean(latencies_arr))
+        median_latency = float(np.median(latencies_arr))
+        p95_latency = float(np.percentile(latencies_arr, 95))
+        p99_latency = float(np.percentile(latencies_arr, 99))
         
         # FPS calculation based on mean latency
         fps = 1000.0 / mean_latency if mean_latency > 0 else 0.0
