@@ -22,6 +22,7 @@ class AppState:
     decision_engine: Optional[DecisionEngine] = None
     result_builder: Optional[ResultBuilder] = None
     plc_service: Optional[PLCService] = None
+    metrics_service: Optional['MetricsService'] = None
 
 
 app_state = AppState()
@@ -63,3 +64,11 @@ def get_result_builder() -> ResultBuilder:
 
 def get_plc_service() -> Optional[PLCService]:
     return app_state.plc_service
+
+
+def get_metrics_service():
+    from src.monitoring.service import MetricsService
+    if app_state.metrics_service is None:
+        # Fallback if not initialized (e.g. testing)
+        app_state.metrics_service = MetricsService()
+    return app_state.metrics_service

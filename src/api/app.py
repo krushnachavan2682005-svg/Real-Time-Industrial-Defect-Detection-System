@@ -16,6 +16,8 @@ from src.plc.service import PLCService
 from src.plc.command_mapper import PLCCommandMapper
 from src.plc.simulator import SimulationPLCClient
 from src.plc.models import PLCConfig, PLCCommandConfig, PLCCommandType
+from src.monitoring.service import MetricsService
+from prometheus_client import make_asgi_app
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +34,13 @@ async def lifespan(app: FastAPI):
         app_state.config = {"api": api_config, "inference": inference_config}
     except Exception as e:
         logger.error(f"Failed to load configurations: {e}")
+        raise
+
+    # Initialize Monitoring
+    try:
+        app_state.metrics_service = MetricsService()
+    except Exception as e:
+        logger.error(f"Failed to initialize monitoring: {e}")
         raise
 
     # Initialize components
@@ -113,6 +122,18 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    
+    # Must import here to avoid dependency issues if state is not ready, but we use app_state directly.
+    from src.api.middleware.monitoring import PrometheusMiddleware
+    # Re-initialize MetricsService here if necessary, or pass the singleton from state.
+    # Since lifespan runs on startup, app_state.metrics_service might not be populated during create_app().
+    # We instantiate it once here for middleware and endpoint.
+    metrics_svc = MetricsService()
+    app.add_middleware(PrometheusMiddleware, metrics_service=metrics_svc)
+    
+    # Metrics Endpoint
+    metrics_app = make_asgi_app()
+    app.mount("/metrics", metrics_app)
 
     # Exception Handlers
     app.add_exception_handler(ApplicationError, industrial_exception_handler)

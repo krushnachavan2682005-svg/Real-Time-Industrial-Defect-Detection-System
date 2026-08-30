@@ -94,3 +94,38 @@ Annotated Inspection Frame
 ```
 
 The **Defect Mapping** module is responsible for providing spatial context to raw bounding boxes and rendering the results into a human-readable form. It transforms standard detections into `MappedDefect` objects (containing region, area, area ratio, and normalized coordinates). An overarching `ResultBuilder` combines this mapped data with the `DecisionResult` and frame metadata into a single `InspectionResult`. Finally, the `DefectVisualizer` generates an annotated inspection frame based on a standardized color policy, completely independent from core mapping logic.
+
+## Monitoring and Observability (Module 15 Update)
+
+```text
+FastAPI Request
+        ↓
+API Metrics Middleware (HTTP request latency/counters)
+        ↓
+Inspection Service
+        ├── inference timing
+        ├── pipeline timing
+        ├── decision counters
+        ├── defect counters
+        └── PLC command counters
+        ↓
+Prometheus Metrics Registry
+        ↓
+GET /metrics
+        ↓
+Prometheus
+        ↓
+Grafana Dashboard
+        ↓
+Alerts
+```
+
+The **Monitoring** architecture is completely decoupled from business logic. It relies on a central `MetricsService` that acts as a safe facade over the `prometheus_client`. The `/metrics` endpoint exposes real-time operational data for Prometheus scraping.
+
+### Metric Ownership
+- **API middleware** → HTTP request count and latency
+- **Inspection service** → Inspection counts and pipeline latency
+- **Inference layer** → Inference timing (measured carefully by the Inspection Service)
+- **Decision result** → Decision metrics (PASS/REVIEW/REJECT)
+- **PLC result** → PLC metrics (success/failure per command)
+- **Errors** → Pipeline error metrics (grouped by component)

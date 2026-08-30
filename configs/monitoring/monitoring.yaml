@@ -1,0 +1,26 @@
+monitoring:
+  enabled: true
+  
+  metrics:
+    enabled: true
+    path: "/metrics"
+    namespace: "industrial_defect"
+    
+  service:
+    name: "industrial-defect-detection"
+    
+  latency:
+    # Typical latency buckets in seconds
+    # Covers: 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2.5s, 5s, 10s
+    histogram_buckets:
+      - 0.005
+      - 0.010
+      - 0.025
+      - 0.050
+      - 0.100
+      - 0.250
+      - 0.500
+      - 1.0
+      - 2.5
+      - 5.0
+      - 10.0

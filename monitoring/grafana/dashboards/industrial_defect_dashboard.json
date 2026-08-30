@@ -1,0 +1,108 @@
+{
+  "title": "Industrial Defect Detection",
+  "uid": "industrial-defect-dashboard",
+  "panels": [
+    {
+      "title": "API Request Rate",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[1m]))",
+          "legendFormat": "Requests / sec"
+        }
+      ]
+    },
+    {
+      "title": "API Latency (p95)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p95 Latency"
+        }
+      ]
+    },
+    {
+      "title": "Model Inference Latency (p95)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(model_inference_duration_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p95 Inference"
+        }
+      ]
+    },
+    {
+      "title": "End-to-End Pipeline Latency (p95)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(inspection_pipeline_duration_seconds_bucket[1m])) by (le))",
+          "legendFormat": "p95 Pipeline"
+        }
+      ]
+    },
+    {
+      "title": "Inspection Throughput",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(inspections_total[1m])) * 60",
+          "legendFormat": "Inspections / min"
+        }
+      ]
+    },
+    {
+      "title": "Decision Distribution",
+      "type": "piechart",
+      "targets": [
+        {
+          "expr": "sum(rate(inspection_decisions_total[5m])) by (decision)",
+          "legendFormat": "{{decision}}"
+        }
+      ]
+    },
+    {
+      "title": "Defect Distribution",
+      "type": "barchart",
+      "targets": [
+        {
+          "expr": "sum(rate(defects_detected_total[5m])) by (class_name)",
+          "legendFormat": "{{class_name}}"
+        }
+      ]
+    },
+    {
+      "title": "PLC Success / Failure",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(plc_commands_total[1m])) by (status)",
+          "legendFormat": "{{status}}"
+        }
+      ]
+    },
+    {
+      "title": "Pipeline Errors",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(pipeline_errors_total[1m])) by (component)",
+          "legendFormat": "{{component}} Errors"
+        }
+      ]
+    },
+    {
+      "title": "Service Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "up{job=\"industrial-defect-api\"}",
+          "legendFormat": "Up"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "timezone": "browser"
+}
