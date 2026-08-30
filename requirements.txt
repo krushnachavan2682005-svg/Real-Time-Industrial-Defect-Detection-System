@@ -11,3 +11,4 @@ pydantic-settings>=2.0.3
 onnx>=1.14.1
 onnxruntime>=1.15.1
 prometheus-client>=0.17.1
+PyYAML>=6.0.1

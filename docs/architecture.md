@@ -53,3 +53,20 @@ Edge Inference
 
 ### Accuracy and Benchmarking
 All exported models must pass a **numerical equivalence** check against the original PyTorch model to ensure no accuracy degradation occurs during the graph export. Latency benchmarking explicitly measures steady-state inference using a monotonic high-resolution timer (discounting warmup iterations).
+
+## Decision Engine Flow (Module 11 Update)
+
+```text
+ONNX Detection Output
+        ↓
+Decision Engine
+        ├── Detection Filtering
+        ├── Defect Aggregation
+        ├── Severity Assessment
+        └── Decision Policy
+                ↓
+        PASS / REVIEW / REJECT
+```
+
+The **Decision Engine** is deterministic and strictly separated from model inference.
+It processes standard `Detection` objects, applies configurable rules (confidence thresholds, class-specific policies, severity escalations) from `configs/decision/decision_rules.yaml`, and outputs a strongly-typed `DecisionResult` mapping defects to an industrial outcome (PASS / REVIEW / REJECT) with a human-readable reason.

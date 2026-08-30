@@ -1,0 +1,34 @@
+global_rules:
+  minimum_confidence: 0.25
+  max_allowed_defects: 5
+
+class_specific_rules:
+  crazing:
+    minimum_confidence: 0.30
+    severity_if_found: MEDIUM
+  inclusion:
+    minimum_confidence: 0.25
+    severity_if_found: LOW
+  patches:
+    minimum_confidence: 0.20
+    severity_if_found: LOW
+  pitted_surface:
+    minimum_confidence: 0.40
+    severity_if_found: HIGH
+  rolled_in_scale:
+    minimum_confidence: 0.35
+    severity_if_found: CRITICAL
+  scratches:
+    minimum_confidence: 0.20
+    severity_if_found: LOW
+
+severity_escalation:
+  multiple_defects_threshold: 3
+  escalate_to: MEDIUM
+
+decision_policy:
+  no_defects: PASS
+  low_severity: REVIEW
+  medium_severity: REVIEW
+  high_severity: REJECT
+  critical_severity: REJECT
