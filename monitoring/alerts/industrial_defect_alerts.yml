@@ -1,0 +1,47 @@
+groups:
+  - name: industrial_defect_alerts
+    rules:
+      - alert: HighApiErrorRate
+        expr: rate(http_requests_total{status_code=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: High API Error Rate
+          description: "More than 5% of API requests have failed in the last 5 minutes."
+
+      - alert: HighPipelineLatency
+        expr: histogram_quantile(0.95, sum(rate(inspection_pipeline_duration_seconds_bucket[5m])) by (le)) > 2.0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: High Inspection Pipeline Latency
+          description: "95th percentile inspection latency is over 2 seconds."
+
+      - alert: HighInferenceLatency
+        expr: histogram_quantile(0.95, sum(rate(model_inference_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: High Model Inference Latency
+          description: "95th percentile inference latency is over 500ms."
+
+      - alert: HighRejectRate
+        expr: rate(inspection_decisions_total{decision="REJECT"}[5m]) / sum(rate(inspection_decisions_total[5m])) > 0.15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: High Reject Rate
+          description: "More than 15% of products are being rejected. Check manufacturing process."
+
+      - alert: PLCFailureRate
+        expr: rate(plc_commands_total{status="failure"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: PLC Command Failures
+          description: "PLC commands are failing to dispatch."
