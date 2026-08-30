@@ -33,3 +33,15 @@ class IntegrationError(ApplicationError):
     """Raised when communication with an external system (e.g., PLC) fails."""
 
     pass
+
+
+class DecisionError(ApplicationError):
+    """Raised when an error occurs during decision logic evaluation."""
+
+    pass
+
+
+class DecisionConfigurationError(ConfigurationError):
+    """Raised when there is an error in the decision rules configuration."""
+
+    pass
