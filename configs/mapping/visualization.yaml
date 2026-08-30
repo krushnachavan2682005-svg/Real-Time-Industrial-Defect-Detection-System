@@ -1,0 +1,16 @@
+# Configuration for Module 12 Visualization Component
+
+colors:
+  # Colors format: [B, G, R]
+  pass: [0, 255, 0]      # Green
+  review: [0, 255, 255]  # Yellow
+  reject: [0, 0, 255]    # Red
+  default_box: [255, 255, 255] # White
+  text: [255, 255, 255]        # White
+  text_bg: [0, 0, 0]           # Black
+
+drawing:
+  box_thickness: 2
+  font_scale_label: 0.5
+  font_scale_main: 1.0
+  font_thickness: 2
