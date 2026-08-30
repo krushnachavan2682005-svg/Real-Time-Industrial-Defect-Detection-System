@@ -1,0 +1,11 @@
+enabled: true
+mode: simulation
+simulation:
+  enabled: true
+commands:
+  pass:
+    action: CONTINUE_CONVEYOR
+  review:
+    action: FLAG_FOR_MANUAL_INSPECTION
+  reject:
+    action: REJECT_PRODUCT
