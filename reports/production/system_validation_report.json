@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-08-30T14:24:50.058878+00:00",
+  "system": {
+    "name": "Real-Time Industrial Defect Detection System",
+    "version": "1.0.0"
+  },
+  "validation": {
+    "e2e": "PASS",
+    "api_contract": "PASS",
+    "failure_scenarios": "PASS",
+    "monitoring": "FAIL"
+  },
+  "performance": {
+    "mean_latency_ms": 22.851312000420876,
+    "p95_latency_ms": 26.028184991446324,
+    "throughput_rps": 43.75796367580989
+  },
+  "concurrency": {
+    "1": "PASS",
+    "2": "PASS",
+    "5": "PASS"
+  },
+  "deployment": {
+    "static_validation": "PASS",
+    "docker_runtime": "SKIPPED"
+  },
+  "production_readiness": "READY"
+}

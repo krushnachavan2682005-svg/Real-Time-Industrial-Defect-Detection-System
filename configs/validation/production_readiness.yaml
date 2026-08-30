@@ -1,0 +1,65 @@
+# Production Readiness Checks Configuration
+
+checks:
+  models:
+    onnx_exists:
+      path: "models/onnx/best.onnx"
+      description: "ONNX model file must exist"
+      type: "file_exists"
+    onnx_non_empty:
+      path: "models/onnx/best.onnx"
+      description: "ONNX model file must not be empty"
+      type: "file_non_empty"
+
+  configs:
+    api_config:
+      path: "configs/api/api.yaml"
+      description: "API configuration must exist"
+      type: "file_exists"
+    decision_config:
+      path: "configs/decision/decision_rules.yaml"
+      description: "Decision engine configuration must exist"
+      type: "file_exists"
+    inference_config:
+      path: "configs/inference/realtime.yaml"
+      description: "Inference configuration must exist"
+      type: "file_exists"
+
+  deployment:
+    dockerfile_exists:
+      path: "deployment/docker/Dockerfile"
+      description: "Dockerfile must exist"
+      type: "file_exists"
+    docker_compose_exists:
+      path: "deployment/docker/docker-compose.yml"
+      description: "Docker compose file must exist"
+      type: "file_exists"
+
+  endpoints:
+    health_endpoint:
+      path: "src/api/routers/health.py"
+      description: "Health endpoint implementation must exist"
+      type: "file_exists"
+    inspection_endpoint:
+      path: "src/api/routers/inspection.py"
+      description: "Inspection endpoint implementation must exist"
+      type: "file_exists"
+
+  system_state:
+    safe_plc_mode:
+      description: "PLC must default to simulation or disabled"
+      type: "config_value_check"
+      file: "configs/api/api.yaml"
+      key: "inspection.enable_plc_dispatch"
+      allowed_values: [false, "false"]
+      warning_only: true # If true, it might be connected but it's a warning
+
+  reports:
+    benchmark_dir:
+      path: "reports/benchmarks"
+      description: "Benchmark reports directory must exist"
+      type: "dir_exists"
+    production_dir:
+      path: "reports/production"
+      description: "Production reports directory must exist"
+      type: "dir_exists"
