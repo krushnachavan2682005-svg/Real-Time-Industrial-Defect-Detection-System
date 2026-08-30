@@ -1,0 +1,83 @@
+{
+  "timestamp": "2026-08-30T14:22:55.744384+00:00",
+  "overall_status": "READY",
+  "checks": [
+    {
+      "name": "onnx_exists",
+      "category": "models",
+      "status": "PASS",
+      "message": "File models/onnx/best.onnx exists."
+    },
+    {
+      "name": "onnx_non_empty",
+      "category": "models",
+      "status": "PASS",
+      "message": "File models/onnx/best.onnx is not empty."
+    },
+    {
+      "name": "api_config",
+      "category": "configs",
+      "status": "PASS",
+      "message": "File configs/api/api.yaml exists."
+    },
+    {
+      "name": "decision_config",
+      "category": "configs",
+      "status": "PASS",
+      "message": "File configs/decision/decision_rules.yaml exists."
+    },
+    {
+      "name": "inference_config",
+      "category": "configs",
+      "status": "PASS",
+      "message": "File configs/inference/realtime.yaml exists."
+    },
+    {
+      "name": "dockerfile_exists",
+      "category": "deployment",
+      "status": "PASS",
+      "message": "File deployment/docker/Dockerfile exists."
+    },
+    {
+      "name": "docker_compose_exists",
+      "category": "deployment",
+      "status": "PASS",
+      "message": "File deployment/docker/docker-compose.yml exists."
+    },
+    {
+      "name": "health_endpoint",
+      "category": "endpoints",
+      "status": "PASS",
+      "message": "File src/api/routers/health.py exists."
+    },
+    {
+      "name": "inspection_endpoint",
+      "category": "endpoints",
+      "status": "PASS",
+      "message": "File src/api/routers/inspection.py exists."
+    },
+    {
+      "name": "safe_plc_mode",
+      "category": "system_state",
+      "status": "PASS",
+      "message": "Config inspection.enable_plc_dispatch has valid value: False."
+    },
+    {
+      "name": "benchmark_dir",
+      "category": "reports",
+      "status": "PASS",
+      "message": "Directory reports/benchmarks exists."
+    },
+    {
+      "name": "production_dir",
+      "category": "reports",
+      "status": "PASS",
+      "message": "Directory reports/production exists."
+    }
+  ],
+  "summary": {
+    "passed": 12,
+    "failed": 0,
+    "warnings": 0
+  }
+}
