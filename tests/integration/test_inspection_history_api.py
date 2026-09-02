@@ -33,8 +33,16 @@ def client(tmp_path):
     }
     
     app = create_app()
+    
+    # Mock authentication
+    from src.auth.dependencies import get_current_user
+    from src.auth.models import AuthenticatedUser, Role
+    app.dependency_overrides[get_current_user] = lambda: AuthenticatedUser(id=1, username="testadmin", role=Role.ADMIN, is_active=True)
+    
     with TestClient(app) as c:
         yield c, app_state.inspection_repository
+        
+    app.dependency_overrides.clear()
 
 def test_get_history_empty(client):
     c, repo = client

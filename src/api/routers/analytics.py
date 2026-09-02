@@ -7,6 +7,8 @@ from src.analytics.config import load_analytics_config, AnalyticsSettings
 from src.persistence.repositories.inspection_repository import InspectionRepository
 from src.api.dependencies import get_inspection_repository
 from src.core.exceptions import ApplicationError
+from src.auth.dependencies import require_roles
+from src.auth.models import Role
 
 router = APIRouter(tags=["Analytics"])
 
@@ -24,7 +26,11 @@ def parse_time(t: str) -> Optional[datetime]:
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid time format. Use ISO 8601.")
 
-@router.get("/summary", response_model=AnalyticsSummary)
+@router.get(
+    "/summary", 
+    response_model=AnalyticsSummary,
+    dependencies=[Depends(require_roles(Role.ADMIN, Role.ENGINEER, Role.VIEWER))]
+)
 def get_analytics_summary(
     start_time: Optional[str] = Query(None, description="Start time (ISO format)"),
     end_time: Optional[str] = Query(None, description="End time (ISO format)"),
@@ -35,7 +41,11 @@ def get_analytics_summary(
     except ApplicationError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/defects", response_model=List[DefectAnalytics])
+@router.get(
+    "/defects", 
+    response_model=List[DefectAnalytics],
+    dependencies=[Depends(require_roles(Role.ADMIN, Role.ENGINEER, Role.VIEWER))]
+)
 def get_defect_analytics(
     start_time: Optional[str] = Query(None, description="Start time (ISO format)"),
     end_time: Optional[str] = Query(None, description="End time (ISO format)"),
@@ -46,7 +56,11 @@ def get_defect_analytics(
     except ApplicationError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.get("/trends", response_model=List[TrendPoint])
+@router.get(
+    "/trends", 
+    response_model=List[TrendPoint],
+    dependencies=[Depends(require_roles(Role.ADMIN, Role.ENGINEER, Role.VIEWER))]
+)
 def get_trend_analytics(
     start_time: Optional[str] = Query(None, description="Start time (ISO format)"),
     end_time: Optional[str] = Query(None, description="End time (ISO format)"),
