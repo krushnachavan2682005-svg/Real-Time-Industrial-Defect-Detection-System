@@ -1,0 +1,11 @@
+database:
+  url: "sqlite:///data/industrial_defect.db"
+  echo: false
+
+pool:
+  enabled: false
+  pool_size: 5
+  max_overflow: 10
+
+persistence:
+  enabled: true

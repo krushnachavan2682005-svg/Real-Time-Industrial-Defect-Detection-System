@@ -136,3 +136,17 @@ class MetricsService:
                 metrics.pipeline_errors_total.labels(component=component).inc()
         except Exception as e:
             logger.warning(f"Failed to record pipeline error metric: {e}")
+
+    def record_database_operation(self, operation: str, success: bool, duration_seconds: float = None) -> None:
+        if not self.enabled:
+            return
+        try:
+            status = "success" if success else "failure"
+            if metrics.database_operations_total:
+                metrics.database_operations_total.labels(operation=operation, status=status).inc()
+            if not success and metrics.database_errors_total:
+                metrics.database_errors_total.labels(operation=operation).inc()
+            if duration_seconds is not None and metrics.database_operation_duration_seconds:
+                metrics.database_operation_duration_seconds.labels(operation=operation).observe(duration_seconds)
+        except Exception as e:
+            logger.warning(f"Failed to record database operation metric: {e}")

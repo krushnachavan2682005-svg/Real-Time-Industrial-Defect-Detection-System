@@ -177,4 +177,18 @@ def process_inspection(file: UploadFile, inspection_id: str) -> InspectionRespon
         plc=plc_dispatch_info,
     )
 
+    # 7. Persist Inspection
+    from src.api.dependencies import get_inspection_repository
+    repo = get_inspection_repository()
+    if repo:
+        try:
+            repo.save(response, inspection_result.timestamp)
+            metrics_service.record_database_operation("insert_inspection", success=True)
+        except Exception as e:
+            logger.error(f"Failed to persist inspection: {e}")
+            metrics_service.record_database_operation("insert_inspection", success=False)
+            metrics_service.record_pipeline_error("persistence")
+            # According to policy, return a controlled server error if persistence fails.
+            raise ApplicationError(f"Inspection persistence failed.") from e
+
     return response

@@ -27,6 +27,11 @@ plc_commands_total: Counter | None = None
 # Error Metrics
 pipeline_errors_total: Counter | None = None
 
+# Database Metrics
+database_operations_total: Counter | None = None
+database_operation_duration_seconds: Histogram | None = None
+database_errors_total: Counter | None = None
+
 
 def init_metrics(namespace: str, buckets: list[float]) -> None:
     """Initialize all Prometheus metrics safely."""
@@ -35,6 +40,7 @@ def init_metrics(namespace: str, buckets: list[float]) -> None:
     global inspections_total, inspection_decisions_total
     global model_inference_duration_seconds, inspection_pipeline_duration_seconds
     global defects_detected_total, plc_commands_total, pipeline_errors_total
+    global database_operations_total, database_operation_duration_seconds, database_errors_total
 
     if _INITIALIZED:
         logger.warning("Metrics already initialized, skipping.")
@@ -107,6 +113,28 @@ def init_metrics(namespace: str, buckets: list[float]) -> None:
         "pipeline_errors_total",
         "Total number of pipeline errors by component",
         ["component"],
+        namespace=namespace,
+    )
+
+    database_operations_total = Counter(
+        "database_operations_total",
+        "Total number of database operations",
+        ["operation", "status"],
+        namespace=namespace,
+    )
+
+    database_operation_duration_seconds = Histogram(
+        "database_operation_duration_seconds",
+        "Database operation duration in seconds",
+        ["operation"],
+        buckets=buckets,
+        namespace=namespace,
+    )
+
+    database_errors_total = Counter(
+        "database_errors_total",
+        "Total number of database errors",
+        ["operation"],
         namespace=namespace,
     )
 

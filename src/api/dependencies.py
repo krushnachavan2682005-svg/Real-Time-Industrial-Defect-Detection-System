@@ -11,6 +11,8 @@ from src.mapping.result_builder import ResultBuilder
 from src.plc.service import PLCService
 from src.plc.simulator import SimulationPLCClient
 from src.plc.command_mapper import PLCCommandMapper
+from src.persistence.repositories.inspection_repository import InspectionRepository
+from src.persistence.repositories.sqlalchemy_inspection_repository import SQLAlchemyInspectionRepository
 
 
 # Global state to hold our singleton instances
@@ -23,6 +25,7 @@ class AppState:
     result_builder: Optional[ResultBuilder] = None
     plc_service: Optional[PLCService] = None
     metrics_service: Optional['MetricsService'] = None
+    inspection_repository: Optional[InspectionRepository] = None
 
 
 app_state = AppState()
@@ -72,3 +75,7 @@ def get_metrics_service():
         # Fallback if not initialized (e.g. testing)
         app_state.metrics_service = MetricsService()
     return app_state.metrics_service
+
+
+def get_inspection_repository() -> Optional[InspectionRepository]:
+    return app_state.inspection_repository
