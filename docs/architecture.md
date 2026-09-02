@@ -169,3 +169,23 @@ The system employs a JWT-based authentication layer tightly integrated with Fast
 - **Authorization (RBAC)**: Centralized authorization decorators limit access to endpoints based on defined roles (`ADMIN`, `ENGINEER`, `OPERATOR`, `VIEWER`). The core business routers are unaltered; they simply consume the DI wrapper.
 - **Security**: Hardcoded secrets are removed. Configuration is driven via `security.yaml` and `.env` to enforce production-grade security and password policies.
 - **Bootstrap Admin**: The API safely initializes an admin user on a fresh database to prevent lockout, configurable via the `BOOTSTRAP_ADMIN_ENABLED` environment variable.
+
+## Frontend Dashboard (Module 21 Update)
+
+```text
+User Browser
+        ↓
+React (Vite) Application
+        ↓
+Axios Client
+        ↓
+FastAPI Backend
+```
+
+The system includes a production-grade React frontend that acts solely as a presentation layer. It rigorously avoids duplicating backend logic.
+
+- **Architecture**: A feature-based folder structure (e.g., `src/features/auth`, `src/features/dashboard`) ensures scalability.
+- **State Management**: `Zustand` is used for global application state (like the current authenticated user), while `@tanstack/react-query` handles server state and API data fetching.
+- **Authentication**: JWT tokens are securely stored in `localStorage`. The Axios client is equipped with interceptors that automatically attach the `Authorization` header and manage `401 Unauthorized` responses.
+- **Routing & RBAC**: `react-router-dom` handles application routing. Reusable `ProtectedRoute` and `RoleGuard` components restrict access based on the user's role (`ADMIN`, `ENGINEER`, `OPERATOR`, `VIEWER`), reflecting backend roles directly in the UI.
+- **Design System**: A clean, industrial aesthetic is established using Vanilla CSS variables and a small set of foundational, reusable UI components (`Card`, `Button`, `Sidebar`, `Topbar`).
