@@ -148,3 +148,24 @@ The system uses SQLAlchemy ORM to persist inspection metadata and mapped defects
 
 - The Core Domain (`InspectionResult`, `DecisionResult`, etc.) remains strictly separated from SQLAlchemy via a repository interface.
 - Historical data is exposed through dedicated REST endpoints (`/api/v1/inspections`) allowing paginated reads and filtering, keeping the primary pipeline unaffected.
+
+## Authentication and Authorization (Module 20 Update)
+
+```text
+User Request
+        ↓
+OAuth2 Password Bearer / JWT Token
+        ↓
+FastAPI Dependency Injection (`get_current_user`)
+        ↓
+Role-Based Access Control (`require_roles`)
+        ↓
+Endpoint / Business Logic
+```
+
+The system employs a JWT-based authentication layer tightly integrated with FastAPI's dependency injection system, ensuring standard OAuth2 compliance and secure role-based access control (RBAC).
+
+- **Authentication**: Uses `passlib` (bcrypt) for secure password hashing and `PyJWT` for generating state-less access tokens.
+- **Authorization (RBAC)**: Centralized authorization decorators limit access to endpoints based on defined roles (`ADMIN`, `ENGINEER`, `OPERATOR`, `VIEWER`). The core business routers are unaltered; they simply consume the DI wrapper.
+- **Security**: Hardcoded secrets are removed. Configuration is driven via `security.yaml` and `.env` to enforce production-grade security and password policies.
+- **Bootstrap Admin**: The API safely initializes an admin user on a fresh database to prevent lockout, configurable via the `BOOTSTRAP_ADMIN_ENABLED` environment variable.

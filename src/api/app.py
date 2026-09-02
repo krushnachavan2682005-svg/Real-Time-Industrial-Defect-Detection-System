@@ -64,6 +64,30 @@ async def lifespan(app: FastAPI):
             logger.info("Persistence layer initialized.")
         else:
             logger.info("Persistence layer is disabled via config.")
+            
+        # Bootstrap Admin
+        from src.auth.config import auth_settings
+        if auth_settings.BOOTSTRAP_ADMIN_ENABLED and persistence_cfg.get("enabled", False):
+            from src.auth.service import AuthService
+            from src.persistence.repositories.user_repository import SQLAlchemyUserRepository
+            from src.auth.models import Role
+            
+            user_repo = SQLAlchemyUserRepository(db.get_session)
+            auth_service = AuthService(user_repo)
+            
+            admin_username = auth_settings.BOOTSTRAP_ADMIN_USERNAME
+            admin_password = auth_settings.BOOTSTRAP_ADMIN_PASSWORD
+            
+            existing_admin = user_repo.get_by_username(admin_username)
+            if not existing_admin:
+                try:
+                    auth_service.create_user(admin_username, admin_password, Role.ADMIN)
+                    logger.info(f"Bootstrap admin user '{admin_username}' created successfully.")
+                except Exception as e:
+                    logger.error(f"Failed to create bootstrap admin: {e}")
+            else:
+                logger.info(f"Bootstrap admin user '{admin_username}' already exists.")
+                
     except Exception as e:
         logger.error(f"Failed to initialize persistence: {e}")
         raise
@@ -165,9 +189,10 @@ def create_app() -> FastAPI:
     app.add_exception_handler(Exception, general_exception_handler)
 
     # Register Routers (will import them locally to avoid circular dependencies if needed, or normal import)
-    from src.api.routers import health, inspection, history, analytics
+    from src.api.routers import health, inspection, history, analytics, auth
 
     app.include_router(health.router)
+    app.include_router(auth.router, prefix="/api/v1")
     app.include_router(inspection.router, prefix="/api/v1")
     app.include_router(history.router, prefix="/api/v1")
     app.include_router(analytics.router, prefix="/api/v1/analytics")

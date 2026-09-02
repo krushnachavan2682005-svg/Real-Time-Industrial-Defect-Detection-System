@@ -1,0 +1,8 @@
+security:
+  jwt:
+    algorithm: HS256
+    access_token_expire_minutes: 60
+  password:
+    min_length: 8
+  bootstrap_admin:
+    enabled: true

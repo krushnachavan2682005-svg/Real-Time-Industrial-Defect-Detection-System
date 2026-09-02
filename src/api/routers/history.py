@@ -3,10 +3,16 @@ from typing import Optional, List, Any, Dict
 from src.persistence.schemas import PaginatedResponse, InspectionHistoryItem
 from src.persistence.repositories.inspection_repository import InspectionRepository
 from src.api.dependencies import get_inspection_repository
+from src.auth.dependencies import require_roles
+from src.auth.models import Role
 
 router = APIRouter(tags=["History"])
 
-@router.get("/inspections", response_model=PaginatedResponse)
+@router.get(
+    "/inspections", 
+    response_model=PaginatedResponse,
+    dependencies=[Depends(require_roles(Role.ADMIN, Role.ENGINEER, Role.OPERATOR, Role.VIEWER))]
+)
 def list_inspections(
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(20, ge=1, le=100, description="Items per page"),
@@ -41,7 +47,11 @@ def list_inspections(
         total=total
     )
 
-@router.get("/inspections/{inspection_id}", response_model=InspectionHistoryItem)
+@router.get(
+    "/inspections/{inspection_id}", 
+    response_model=InspectionHistoryItem,
+    dependencies=[Depends(require_roles(Role.ADMIN, Role.ENGINEER, Role.OPERATOR, Role.VIEWER))]
+)
 def get_inspection(inspection_id: str, repo: InspectionRepository = Depends(get_inspection_repository)):
     if repo is None:
         raise HTTPException(status_code=503, detail="Persistence layer is not configured")

@@ -16,8 +16,16 @@ def client():
     # Mocking lifespan
     app_state.inference_engine = "mock_model"
     app_state.plc_service = None
+    
+    # Bypass auth
+    from src.auth.dependencies import get_current_user
+    from src.auth.models import AuthenticatedUser, Role
+    app.dependency_overrides[get_current_user] = lambda: AuthenticatedUser(id=1, username="testadmin", role=Role.ADMIN, is_active=True)
+    
     with TestClient(app) as client:
         yield client
+    
+    app.dependency_overrides.clear()
 
 
 def test_health_check(client):
