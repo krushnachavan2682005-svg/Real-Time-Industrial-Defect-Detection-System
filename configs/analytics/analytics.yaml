@@ -1,0 +1,13 @@
+analytics:
+  default_page_size: 100
+  max_time_range_days: 365
+
+  trend:
+    default_interval: day
+
+  thresholds:
+    high_reject_rate: 0.15
+    high_review_rate: 0.10
+
+  reporting:
+    enabled: true

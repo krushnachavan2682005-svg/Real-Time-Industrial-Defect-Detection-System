@@ -18,6 +18,8 @@ from src.plc.simulator import SimulationPLCClient
 from src.plc.models import PLCConfig, PLCCommandConfig, PLCCommandType
 from src.monitoring.service import MetricsService
 from prometheus_client import make_asgi_app
+from src.persistence.database import db
+from src.persistence.repositories.sqlalchemy_inspection_repository import SQLAlchemyInspectionRepository
 
 logger = logging.getLogger(__name__)
 
@@ -30,17 +32,40 @@ async def lifespan(app: FastAPI):
             api_config = yaml.safe_load(f)
         with open("configs/inference/realtime.yaml", "r") as f:
             inference_config = yaml.safe_load(f)
+        with open("configs/persistence/database.yaml", "r") as f:
+            db_config = yaml.safe_load(f)
 
-        app_state.config = {"api": api_config, "inference": inference_config}
+        app_state.config = {"api": api_config, "inference": inference_config, "database": db_config}
     except Exception as e:
         logger.error(f"Failed to load configurations: {e}")
         raise
+
 
     # Initialize Monitoring
     try:
         app_state.metrics_service = MetricsService()
     except Exception as e:
         logger.error(f"Failed to initialize monitoring: {e}")
+        raise
+        
+    # Initialize Database
+    try:
+        persistence_cfg = db_config.get("persistence", {})
+        if persistence_cfg.get("enabled", False):
+            db_url = db_config.get("database", {}).get("url")
+            echo = db_config.get("database", {}).get("echo", False)
+            pool_cfg = db_config.get("pool", {})
+            pool_enabled = pool_cfg.get("enabled", False)
+            pool_size = pool_cfg.get("pool_size", 5)
+            max_overflow = pool_cfg.get("max_overflow", 10)
+            
+            db.initialize(db_url=db_url, echo=echo, pool_enabled=pool_enabled, pool_size=pool_size, max_overflow=max_overflow)
+            app_state.inspection_repository = SQLAlchemyInspectionRepository(db.get_session)
+            logger.info("Persistence layer initialized.")
+        else:
+            logger.info("Persistence layer is disabled via config.")
+    except Exception as e:
+        logger.error(f"Failed to initialize persistence: {e}")
         raise
 
     # Initialize components
@@ -140,9 +165,12 @@ def create_app() -> FastAPI:
     app.add_exception_handler(Exception, general_exception_handler)
 
     # Register Routers (will import them locally to avoid circular dependencies if needed, or normal import)
-    from src.api.routers import health, inspection
+    from src.api.routers import health, inspection, history, analytics
 
     app.include_router(health.router)
     app.include_router(inspection.router, prefix="/api/v1")
+    app.include_router(history.router, prefix="/api/v1")
+    app.include_router(analytics.router, prefix="/api/v1/analytics")
+
 
     return app

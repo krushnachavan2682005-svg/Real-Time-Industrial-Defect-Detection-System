@@ -12,7 +12,16 @@ def get_health():
     plc_mode = "disabled"
     if app_state.plc_service is not None:
         plc_mode = "simulation"  # based on current initialization
+        
+    db_status = "disabled"
+    if app_state.inspection_repository is not None:
+        db_healthy = app_state.inspection_repository.health_check()
+        db_status = "healthy" if db_healthy else "unhealthy"
 
-    return HealthResponse(
-        status="healthy", model_loaded=model_loaded, plc_mode=plc_mode
-    )
+    return {
+        "status": "healthy" if db_status in ["healthy", "disabled"] else "unhealthy",
+        "model_loaded": model_loaded,
+        "plc_mode": plc_mode,
+        "database": db_status
+    }
+

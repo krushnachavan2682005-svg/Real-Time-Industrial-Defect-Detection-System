@@ -8,6 +8,9 @@ class HealthResponse(BaseModel):
     plc_mode: str = Field(
         ..., description="Current PLC mode (e.g., simulation, connected)"
     )
+    database: Optional[str] = Field(
+        None, description="Database status (e.g., healthy, disabled, unhealthy)"
+    )
 
 
 class BBox(BaseModel):

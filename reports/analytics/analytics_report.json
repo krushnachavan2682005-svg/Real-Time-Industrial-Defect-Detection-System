@@ -1,0 +1,29 @@
+{
+  "time_range": {
+    "start": "0001-01-01T00:00:00",
+    "end": "9999-12-31T23:59:59.999999"
+  },
+  "inspection_statistics": {
+    "total_inspections": 1,
+    "pass_count": 1,
+    "review_count": 0,
+    "reject_count": 0,
+    "pass_rate": 1.0,
+    "review_rate": 0.0,
+    "reject_rate": 0.0,
+    "average_defects_per_inspection": 0.0,
+    "average_latency_ms": 10.0
+  },
+  "defect_distribution": [],
+  "trends": [
+    {
+      "timestamp": "2026-09-01T00:00:00Z",
+      "total_inspections": 1,
+      "pass_count": 1,
+      "review_count": 0,
+      "reject_count": 0,
+      "reject_rate": 0.0
+    }
+  ],
+  "quality_alerts": []
+}

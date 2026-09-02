@@ -129,3 +129,22 @@ The **Monitoring** architecture is completely decoupled from business logic. It 
 - **Decision result** → Decision metrics (PASS/REVIEW/REJECT)
 - **PLC result** → PLC metrics (success/failure per command)
 - **Errors** → Pipeline error metrics (grouped by component)
+
+## Persistence Layer (Module 18 Update)
+
+```text
+Inspection Pipeline
+        ↓
+InspectionResult
+        ↓
+Inspection Repository
+        ↓
+Database
+        ↓
+Historical Inspection API
+```
+
+The system uses SQLAlchemy ORM to persist inspection metadata and mapped defects to a relational database. This serves as an immutable audit log of manufacturing events. 
+
+- The Core Domain (`InspectionResult`, `DecisionResult`, etc.) remains strictly separated from SQLAlchemy via a repository interface.
+- Historical data is exposed through dedicated REST endpoints (`/api/v1/inspections`) allowing paginated reads and filtering, keeping the primary pipeline unaffected.
