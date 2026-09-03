@@ -1,5 +1,6 @@
 api
 augmentation
+auth
 core
 data
 decision

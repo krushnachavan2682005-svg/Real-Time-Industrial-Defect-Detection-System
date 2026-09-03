@@ -7,13 +7,13 @@ import logging
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.core.logging import setup_logging
+from src.core.logging import configure_logging
 
 logger = logging.getLogger(__name__)
 
 
 def main():
-    setup_logging()
+    configure_logging()
 
     # Load API config just for server port/host
     try:

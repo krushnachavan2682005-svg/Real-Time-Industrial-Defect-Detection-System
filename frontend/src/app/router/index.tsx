@@ -10,6 +10,7 @@ import { LoginPage } from '../../features/auth/LoginPage';
 import { DashboardPage } from '../../features/dashboard/DashboardPage';
 import { NotFoundPage } from '../../pages/NotFoundPage';
 import { UnauthorizedPage } from '../../pages/UnauthorizedPage';
+import { InspectionPage } from '../../features/inspection/pages/InspectionPage';
 
 import { Permission } from '../../features/auth/permissions';
 
@@ -30,7 +31,7 @@ export const AppRouter: React.FC = () => {
 
           {/* Placeholders for future modules */}
           <Route element={<RoleGuard permission={Permission.VIEW_INSPECTION} />}>
-            <Route path="/inspection" element={<div>Live Inspection Placeholder</div>} />
+            <Route path="/inspection" element={<InspectionPage />} />
           </Route>
           
           <Route element={<RoleGuard permission={Permission.VIEW_HISTORY} />}>
